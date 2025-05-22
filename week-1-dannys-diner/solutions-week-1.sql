@@ -1,7 +1,10 @@
+-- Active: 1747829711247@@localhost@3306@dannys_diner
 select * 
 from sales;
 select *
 from members;
+SELECT *
+FROM menu;
 
 -- What is the total amount each customer spent at the restaurant?
 select s.customer_id, sum(m.price) as total_amount
@@ -88,3 +91,16 @@ select customer_id, round(sum(IF(diff <7,2*10.0*price/1.0, IF(product_id = 1,2*1
 from items
 where order_date < '2021-02-01'
 group by customer_id;
+
+
+-- Joining everything together
+SELECT s.customer_id,order_date,product_name, price, 
+CASE 
+	WHEN join_date IS NULL THEN "N"
+	ELSE  IF(order_date>=join_date,"Y","N")
+END as `member`
+FROM sales s
+LEFT JOIN menu m 
+	ON s.product_id = m.product_id
+LEFT JOIN members n
+	ON s.customer_id = n.customer_id;
